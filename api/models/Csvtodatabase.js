@@ -8,7 +8,25 @@
 module.exports = {
 
   attributes: {
-    address: {
+    title: {
+      type: 'string'
+    },
+    actor1: {
+      type: 'string'
+    },
+    actor2: {
+      type: 'string'
+    },
+    actor3: {
+      type: 'string'
+    },
+    production: {
+      type: 'string'
+    },
+    release: {
+      type: 'string'
+    },
+    locations: {
       type: 'string'
     },
     lat: {

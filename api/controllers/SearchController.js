@@ -11,7 +11,8 @@ let search = async (req, res) => {
   subquery['contains'] = q;
   query[category] = subquery;
   let results = await Csvtodatabase.find(query);
-  res.view('pages/searchResult',{ results: results });
+  console.log(results);
+  res.view('pages/searchResult',{ results: results});
 };
 module.exports = {
   searchUtility: searchUtility,

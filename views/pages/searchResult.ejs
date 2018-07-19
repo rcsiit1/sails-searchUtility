@@ -6,13 +6,18 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
-      <div class="container" style="max-width:700px;">
+      <div class="container" style="max-width:1000px;">
 <form method="POST" action="/search/">
 <br><br>
   <div class="form-group">
     <label for="inputState">Enter category you want to search :</label>
     <select name="category" class="form-control">
-      <option selected>address</option>
+      <option selected>title</option>
+      <option >actor1</option>
+      <option >actor2</option>
+      <option >actor3</option>
+      <option >production</option>
+      <option >locations</option>
     </select>
   </div>
 
@@ -26,14 +31,30 @@
     <table class="table">
         <thead>
           <tr>
-            <th>Results</th>
+            <th>Title</th>
+            <th>Actor</th>
+            <th>Actor</th>
+            <th>Actor</th>
+            <th>Location</th>
+            <th>Release Year</th>
+            <th>Production House</th>
+            <th>Latitute</th>
+            <th>Longitude</th>
           </tr>
         </thead>
         <tbody>
             <% if(results.length>0){%>
               <% results.forEach(function (result){%>
             <tr class="info">
-              <td><%= result.address %></td>
+              <td><%= result.title %></td>
+              <td><%= result.actor1 %></td>
+              <td><%= result.actor2%></td>
+              <td><%= result.actor3 %></td>
+              <td><%= result.locations %></td>
+              <td><%= result.release %></td>
+              <td><%= result.production %></td>
+              <td><%= result.lat %></td>
+              <td><%= result.long %></td>
 
             </tr>
             <%})%>

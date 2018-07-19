@@ -1,77 +1,59 @@
 const csv = require('fast-csv');
 const NodeGeocoder = require('node-geocoder');
-const async = require('async');
+
 
 var insertData = async (req, res) => {
-  let readCsv = (callback) => {
-    var addresses = [];
-    var names = [];
-    let csvStream = csv.fromPath('./assets/mycsv.csv', { headers: true })
+  function ran() {
+    console.log("open functions");
+    var results = [];
+    csv.fromPath('./assets/mycsv.csv', { headers: true })
       .on('data', (record) => {
-       csvStream.pause();
-        if (record) {
-          addresses.push(record.Address);
-          names.push(record.Name);
-        }
-        csvStream.resume();
+        results.push(record);
       }).on('end', () => {
-        console.log("Job done!");
-        callback(null, addresses);
+        console.log("Process Completed!");
+        googleGeocoding(results);
       }).on('error', () => {
         console.log('error');
       });
   };
 
-  let googleGeocoding = (addresses, callback) => {
+
+  function googleGeocoding(results) {
+    console.log("world");
     const options = {
       provider: 'google',
       httpAdapter: 'https',
-      apiKey: 'AIzaSyBJn9YoTvEO_7o8JcfO33ZT8kWMy9P_IVs',
+      apiKey: 'AIzaSyBJn9YoTvEO_7o8JcfO33ZT8kWMy9P_IVs ',
       formatter: null
     };
     var geocoder = NodeGeocoder(options);
-    geocoder.batchGeocode(addresses, (err, results) => {
 
-      if (err) {
-        return callback(err);
+    for (let i = 0; i < results.length; i++) {
+      //console.log(results.Locations);
+      if (results[i].Locations !== undefined) {
+        geocoder.geocode(results[i].Locations, async (err, res) => {
+          try {
+            //console.log(res);
+            if (res && res.length > 0 && res[0] !== undefined) {
+              console.log(res);
+              await Csvtodatabase.create({ title: results[i].Title, actor1: results[i].Actor1, actor2: results[i].Actor2, actor3: results[i].Actor3, production: results[i].ProductionCompany, release: results[i].ReleaseYear, locations: results[i].Locations, lat: res[0].latitude, long: res[0].longitude });
+
+            }
+          }
+          catch (err) {
+            console.log(err);
+          }
+        });
       }
-      else {
-        return callback(null, results);
-      }
-    });
+    }
   };
-
-  let updateDatabase = (results, callback) => {
-    for (let i = 1; i < results.length; i++) {
-      Csvtodatabase.create({ address: results[i].value[0].formattedAddress, lat: results[i].value[0].latitude, long: results[i].value[0].longitude }).exec((err, allData) => {
-        if (err) {
-          res.send(500, { error: err });
-        }
-        else {
-          return callback(null, allData);
-        }
-
-      });
-    }
-    return callback(null, 'success');
-  };
-
-  async.waterfall([
-    readCsv,
-    googleGeocoding,
-    updateDatabase,
-  ], (err, result) => {
-
-    if (err) {
-      res.json({ error: err });
-    }
-    else {
-      res.json({ result: result });
-      //console.log(JSON.stringify(result));
-    }
-
-  });
+  ran();
 };
+
+
+
+
+
 
 module.exports = {
   insertData: insertData,
