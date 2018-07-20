@@ -1,70 +1,132 @@
 <html>
-  <head>
-<title> Search Directory</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<head>
+  <title> Search Directory</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  </head>
-  <body>
-      <div class="container" style="max-width:1000px;">
-<form method="POST" action="/search/">
-<br><br>
-  <div class="form-group">
-    <label for="inputState">Enter category you want to search :</label>
-    <select name="category" class="form-control">
-      <option selected>title</option>
-      <option >actor1</option>
-      <option >actor2</option>
-      <option >actor3</option>
-      <option >production</option>
-      <option >locations</option>
-    </select>
-  </div>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJn9YoTvEO_7o8JcfO33ZT8kWMy9P_IVs"></script>
+  <script>
+    // In the following example, markers appear when the user clicks on the map.
+    // Each marker is labeled with a single alphabetical character.
+    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var labelIndex = 0;
 
-  <div class="form-group">
-      <label >Search parameter :</label>
-      <input type="text" name="search_query" class="form-control" >
-  </div>
-  <button type="submit" class="btn btn-success">Search</button>
- </form>
+    function initialize() {
+      var bangalore = { lat: 12.97, lng: 77.59 };
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: bangalore
+      });
+
+      // This event listener calls addMarker() when the map is clicked.
+      google.maps.event.addListener(map, 'click', function (event) {
+        addMarker(event.latLng, map);
+      });
+
+      // Add a marker at the center of the map.
+      addMarker(bangalore, map);
+    }
+
+    // Adds a marker to the map.
+    function addMarker(location, map) {
+      // Add the marker at the clicked location, and add the next-available label
+      // from the array of alphabetical characters.
+      var marker = new google.maps.Marker({
+        position: location,
+        label: labels[labelIndex++ % labels.length],
+        map: map
+      });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+  </script>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div class="container" style="max-width:1000px;">
+
+    <form method="POST" action="/search/">
+      <br>
+      <br>
+      <div class="form-group">
+        <label for="inputState">Enter category you want to search :</label>
+        <select name="category" class="form-control">
+          <option selected>title</option>
+          <option>actor1</option>
+          <option>actor2</option>
+          <option>actor3</option>
+          <option>production</option>
+          <option>locations</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Search parameter :</label>
+        <input type="text" name="search_query" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-success">Search</button>
+    </form>
 
     <table class="table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Actor</th>
-            <th>Actor</th>
-            <th>Actor</th>
-            <th>Location</th>
-            <th>Release Year</th>
-            <th>Production House</th>
-            <th>Latitute</th>
-            <th>Longitude</th>
-          </tr>
-        </thead>
-        <tbody>
-            <% if(results.length>0){%>
-              <% results.forEach(function (result){%>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Actor</th>
+          <th>Actor</th>
+          <th>Actor</th>
+          <th>Location</th>
+          <th>Release Year</th>
+          <th>Production House</th>
+          <th>Latitute</th>
+          <th>Longitude</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(results.length>0){ %>
+          <% results.forEach(function (result){ %>
             <tr class="info">
-              <td><%= result.title %></td>
-              <td><%= result.actor1 %></td>
-              <td><%= result.actor2%></td>
-              <td><%= result.actor3 %></td>
-              <td><%= result.locations %></td>
-              <td><%= result.release %></td>
-              <td><%= result.production %></td>
-              <td><%= result.lat %></td>
-              <td><%= result.long %></td>
+              <td>
+                <%= result.title %>
+              </td>
+              <td>
+                <%= result.actor1 %>
+              </td>
+              <td>
+                <%= result.actor2 %>
+              </td>
+              <td>
+                <%= result.actor3 %>
+              </td>
+              <td>
+                <%= result.locations %>
+              </td>
+              <td>
+                <%= result.release %>
+              </td>
+              <td>
+                <%= result.production %>
+              </td>
+              <td>
+                <%= result.lat %>
+              </td>
+              <td>
+                <%= result.long %>
+              </td>
 
             </tr>
-            <%})%>
-        <% } else { %>
-          <tr class="danger">
-        <td >No data found</td></tr>
-          <% } %>
-        </tbody>
-        </table>
+            <% }) %>
+              <% } else { %>
+                <tr class="danger">
+                  <td>No data found</td>
+                </tr>
+                <% } %>
+      </tbody>
+    </table>
 
-</div>
-  </body>
+  </div>
+
+</body>
+
 </html>
